@@ -1,10 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Payment Success{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Payment Successful</h1>
+    <p>Your ticket has been marked as paid.</p>
+</section>
+
+<div class="ticket-card profile-card">
+    <div class="profile-header">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="profile-avatar">
+        <h2>Plate: {{ ticket.plate_number }}</h2>
+        <p>Ticket ID: {{ ticket.id }}</p>
+    </div>
+    <div class="profile-details">
+        <p><strong>Status:</strong> Paid ✅</p>
+        {% if ticket.slot %}
+            <p><strong>Slot:</strong> {{ ticket.slot.name }}</p>
+        {% endif %}
+    </div>
+    <div class="qr-section">
+        <img src="{{ qr_file }}" alt="QR Code" class="qr-image">
+    </div>
+    <div class="button-group">
+        <a href="/ticket/{{ ticket.id }}" class="btn">View Ticket</a>
+        <a href="/" class="btn">Home</a>
+    </div>
+</div>
+{% endblock %}

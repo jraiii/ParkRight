@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Welcome to ParkRight</h1>
+    <p>Reserve your parking slot easily.</p>
+</section>
+
+<div class="form-section">
+    <h2>Get a Ticket</h2>
+    <form action="/new_ticket" method="post">
+        <input type="text" name="plate" placeholder="Enter Plate Number" required>
+        <button type="submit">Generate Ticket</button>
+    </form>
+</div>
+{% endblock %}

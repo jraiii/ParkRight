@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Reset Success{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Tickets Reset</h1>
+    <p>All tickets have been cleared successfully.</p>
+</section>
+
+<div class="form-section">
+    <p>Slots remain intact. You can continue managing new tickets.</p>
+    <div class="button-group">
+        <a href="/admin/dashboard" class="btn">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

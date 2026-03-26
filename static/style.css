@@ -1,0 +1,212 @@
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom right, #6a0dad, #f9f9fb);
+    color: #333;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+    background: rgba(106, 13, 173, 0.9);
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+.logo {
+    height: 80px; /* Larger logo */
+}
+
+/* Hero */
+.hero {
+    padding: 30px 20px;
+    background: rgba(75, 0, 130, 0.9);
+    color: #fff;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.hero h1 { font-size: 1.8em; margin-bottom: 8px; }
+.hero p { font-size: 1.1em; color: #ddd; }
+
+/* Cards */
+.card, .form-section, .table-section, .ticket-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    text-align: center;
+}
+
+/* Inputs */
+input, select {
+    padding: 12px;
+    margin-bottom: 14px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    text-align: center;
+}
+
+/* Buttons */
+button, .btn {
+    display: inline-block;
+    background: #6a0dad;
+    color: #fff;
+    padding: 12px 20px;
+    margin: 8px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover, .btn:hover {
+    background: #8e2de2;
+    transform: scale(1.05);
+}
+.btn.disabled {
+    background: #aaa;
+    cursor: not-allowed;
+}
+
+/* Slot Grid */
+.slot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 800px;
+}
+.slot-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.slot-card.occupied { opacity: 0.6; }
+.slot-card.highlight {
+    border: 2px solid #27ae60;
+    box-shadow: 0 0 12px #27ae60;
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 8px #27ae60; }
+    50% { box-shadow: 0 0 16px #2ecc71; }
+    100% { box-shadow: 0 0 8px #27ae60; }
+}
+
+/* Tables */
+.table-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+th {
+    background: #6a0dad;
+    color: #fff;
+}
+
+/* Toast Notification */
+#toast {
+    position: fixed;
+    bottom: 80px; /* leave space for footer */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #27ae60;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    animation: fadein 0.5s, fadeout 0.5s 3s;
+}
+@keyframes fadein { from {opacity:0;} to {opacity:1;} }
+@keyframes fadeout { from {opacity:1;} to {opacity:0;} }
+
+/* Profile Card (Ticket Page) */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.profile-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+.profile-avatar {
+    height: 60px;
+    margin-bottom: 10px;
+}
+.profile-details {
+    margin-bottom: 15px;
+}
+.qr-section {
+    margin: 15px 0;
+}
+.qr-image {
+    width: 200px;
+    height: 200px;
+    transition: transform 0.3s ease;
+}
+.qr-image:hover {
+    transform: rotate(5deg) scale(1.1);
+}
+
+/* Footer Navigation */
+.footer-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(106, 13, 173, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 12px 0;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+.footer-nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95em;
+    transition: color 0.3s ease;
+}
+.footer-nav a:hover {
+    color: #27ae60;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .slot-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.4em; }
+    .hero p { font-size: 1em; }
+}

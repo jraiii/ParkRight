@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Choose Slot{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Available Slots</h1>
+    <p>Select a slot for your car.</p>
+</section>
+
+<div class="slot-grid">
+    {% for slot in slots %}
+    <div class="slot-card {% if ticket.slot and ticket.slot.id == slot.id %}highlight{% elif not slot.available %}occupied{% endif %}">
+        <h3>{{ slot.name }}</h3>
+        <p>{% if slot.available %} ✅ Available {% else %} ❌ Occupied {% endif %}</p>
+        {% if slot.available and not ticket.slot %}
+            <a href="/choose_slot/{{ slot.id }}/{{ ticket.id }}" class="btn">Choose</a>
+        {% else %}
+            <span class="btn disabled">Not Available</span>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<div class="button-group">
+    <a href="/proceed/{{ ticket.id }}" class="btn">Proceed</a>
+</div>
+{% endblock %}

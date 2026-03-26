@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}ParkRight{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/"><img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo"></a>
+        {% if session.get('admin') %}
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/logout">Logout</a>
+        {% else %}
+            <a href="/">Home</a>
+            <a href="/admin/login">Admin</a>
+        {% endif %}
+    </nav>
+
+    <!-- Toast Notifications -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div id="toast">
+          {% for msg in messages %}
+            <p>{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Page Content -->
+    {% block content %}{% endblock %}
+
+    <!-- Footer Navigation -->
+    <div class="footer-nav">
+        <a href="/">Home</a>
+        {% if session.get('last_ticket_id') %}
+            <a href="/ticket/{{ session.get('last_ticket_id') }}">Ticket</a>
+        {% else %}
+            <a href="/">Ticket</a>
+        {% endif %}
+        <a href="/admin/login">Admin</a>
+    </div>
+</body>
+</html>
