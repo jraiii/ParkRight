@@ -4,30 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2079cfb2-7602-4cac-a2ab-f00e0728554e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ParkRight.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ParkRight.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/24871d6a-5c12-4d86-9119-089641ec4571.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/24871d6a-5c12-4d86-9119-089641ec4571/storage_v2/_src_/schema/main.uQUzAA.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/reset.py" beforeDir="false" afterPath="$PROJECT_DIR$/reset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/seed.py" beforeDir="false" afterPath="$PROJECT_DIR$/seed.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/payment_success.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/payment_success.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/reset_success.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reset_success.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/slots.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slots.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/success.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/success.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ticket.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ticket.html" afterDir="false" />
+    <list default="true" id="2079cfb2-7602-4cac-a2ab-f00e0728554e" name="Changes" comment="updates">
+      <change beforePath="$PROJECT_DIR$/templates/admin_login.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin_login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/payment_success.html" beforeDir="false" afterPath="$PROJECT_DIR$/payment_success.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reset_success.html" beforeDir="false" afterPath="$PROJECT_DIR$/reset_success.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/slots.html" beforeDir="false" afterPath="$PROJECT_DIR$/slots.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/success.html" beforeDir="false" afterPath="$PROJECT_DIR$/success.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ticket.html" beforeDir="false" afterPath="$PROJECT_DIR$/ticket.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -143,7 +129,7 @@
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -179,14 +165,36 @@
       <workItem from="1773964813086" duration="4510000" />
       <workItem from="1773970358530" duration="3881000" />
       <workItem from="1774224782557" duration="36000" />
+      <workItem from="1774567332695" duration="512000" />
     </task>
+    <task id="LOCAL-00001" summary="updates">
+      <option name="closed" value="true" />
+      <created>1774567424507</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1774567424542</updated>
+    </task>
+    <task id="LOCAL-00002" summary="updates">
+      <option name="closed" value="true" />
+      <created>1774567440188</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1774567440188</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="updates" />
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ParkRight$ParkRight.coverage" NAME="ParkRight Coverage Results" MODIFIED="1774224792510" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ParkRight$ParkRight.coverage" NAME="ParkRight Coverage Results" MODIFIED="1774567349741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ParkRight$seed.coverage" NAME="seed Coverage Results" MODIFIED="1773757478876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

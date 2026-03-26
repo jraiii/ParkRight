@@ -8,12 +8,12 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar">
-        <a href="/"><img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo"></a>
+        <a href="/static"><img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo"></a>
         {% if session.get('admin') %}
             <a href="/admin/dashboard">Dashboard</a>
             <a href="/admin/logout">Logout</a>
         {% else %}
-            <a href="/">Home</a>
+            <a href="/static">Home</a>
             <a href="/admin/login">Admin</a>
         {% endif %}
     </nav>
@@ -34,11 +34,11 @@
 
     <!-- Footer Navigation -->
     <div class="footer-nav">
-        <a href="/">Home</a>
+        <a href="/static">Home</a>
         {% if session.get('last_ticket_id') %}
             <a href="/ticket/{{ session.get('last_ticket_id') }}">Ticket</a>
         {% else %}
-            <a href="/">Ticket</a>
+            <a href="/static">Ticket</a>
         {% endif %}
         <a href="/admin/login">Admin</a>
     </div>
