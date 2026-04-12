@@ -1,158 +1,302 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey
-from sqlalchemy.orm import sessionmaker, relationship, declarative_base
-import qrcode, os
-from datetime import datetime
+import re, sqlite3, qrcode, io, base64, time
+from qrcode.image.pil import PilImage
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "supersecret"
 
 # --- Database setup ---
-Base = declarative_base()
-engine = create_engine("sqlite:///parkright.db")  # ✅ stick with one file
-Session = sessionmaker(bind=engine)
-db_session = Session()
+def init_db():
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            fullname TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            contact TEXT NOT NULL,
+            plate TEXT,
+            password TEXT NOT NULL,
+            role TEXT NOT NULL DEFAULT 'user'
+        )
+    """)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS reservations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user TEXT NOT NULL,
+            establishment TEXT NOT NULL,
+            slot TEXT NOT NULL,
+            payment_method TEXT NOT NULL,
+            amount REAL NOT NULL,
+            duration TEXT NOT NULL,
+            timestamp TEXT,
+            status TEXT NOT NULL DEFAULT 'Pending'
+        )
+    """)
+    conn.commit()
+    conn.close()
 
-class Slot(Base):
-    __tablename__ = "slots"
-    id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True)
-    available = Column(Boolean, default=True)
-    tickets = relationship("Ticket", back_populates="slot")
+init_db()
 
-class Ticket(Base):
-    __tablename__ = "tickets"
-    id = Column(Integer, primary_key=True)
-    plate_number = Column(String)
-    entry_time = Column(DateTime, default=datetime.now)
-    paid = Column(Boolean, default=False)
-    slot_id = Column(Integer, ForeignKey("slots.id"))
-    slot = relationship("Slot", back_populates="tickets")
+# --- Validation helpers ---
+def valid_email(email): return re.match(r"[^@]+@[^@]+\.[^@]+", email)
+def valid_contact(contact): return re.match(r"^\d{10,15}$", contact)
+def valid_password(password):
+    return (len(password) >= 8 and re.search(r"[A-Z]", password) and re.search(r"\d", password))
 
-Base.metadata.create_all(engine)
-
-# --- Seed default slots once ---
-if db_session.query(Slot).count() == 0:
-    default_slots = ["A1", "A2", "B1", "B2"]
-    for name in default_slots:
-        db_session.add(Slot(name=name, available=True))
-    db_session.commit()
-    print("Default slots seeded:", default_slots)
-
-# --- Helper: generate QR ---
-def generate_qr(ticket_id):
-    qr_dir = "static/qr_codes"
-    os.makedirs(qr_dir, exist_ok=True)
-    qr_path = f"{qr_dir}/ticket_{ticket_id}.png"
-    if not os.path.exists(qr_path):
-        qrcode.make(f"TICKET-{ticket_id}").save(qr_path)
-    return qr_path
-
-# --- Routes ---
+# --- Homepage ---
 @app.route("/")
-def home():
-    return render_template("index.html")
+def index():
+    establishments = {
+        "SM Bataan": 50,
+        "Vista Mall Bataan": 40,
+        "Robinsons Galleria": 30,
+        "Capitol Square": 30
+    }
+    return render_template("establishments.html", establishments=establishments)
 
-@app.route("/new_ticket", methods=["POST"])
-def new_ticket():
-    plate = request.form["plate"]
-    ticket = Ticket(plate_number=plate)
-    db_session.add(ticket)
-    db_session.commit()
-    session["last_ticket_id"] = ticket.id
-    qr_path = generate_qr(ticket.id)
-    return render_template("ticket.html", ticket=ticket, qr_file=qr_path)
+# --- Slots page ---
+@app.route("/slots/<est>")
+def slots(est):
+    establishments = {
+        "SM Bataan": 50,
+        "Vista Mall Bataan": 40,
+        "Robinsons Galleria": 30,
+        "Capitol Square": 30
+    }
+    if est not in establishments:
+        return f"No data for {est}"
+    slot_count = establishments[est]
+    rows = []
+    for i in range(1, (slot_count // 2) + 1):
+        left_label = f"{i}st Left" if i == 1 else f"{i}th Left"
+        right_label = f"{i}st Right" if i == 1 else f"{i}th Right"
+        rows.append((i, left_label, right_label))
+    return render_template("slots.html", establishment=est, rows=rows)
 
-@app.route("/ticket/<int:ticket_id>")
-def ticket(ticket_id):
-    ticket = db_session.query(Ticket).get(ticket_id)
-    if ticket:
-        qr_path = generate_qr(ticket.id)
-        return render_template("ticket.html", ticket=ticket, qr_file=qr_path)
-    return redirect(url_for("home"))
+# --- Slot selection with QR ---
+@app.route("/select_slot/<est>/<slot>")
+def select_slot(est, slot):
+    if "user" in session:
+        qr_data = f"User: {session['user']} | Establishment: {est} | Slot: {slot}"
+        qr = qrcode.QRCode(box_size=10, border=4)
+        qr.add_data(qr_data)
+        qr.make(fit=True)
+        img = qr.make_image(image_factory=PilImage)
 
-@app.route("/slots/<int:ticket_id>")
-def slots(ticket_id):
-    ticket = db_session.query(Ticket).get(ticket_id)
-    slots = db_session.query(Slot).all()
-    return render_template("slots.html", ticket=ticket, slots=slots)
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        qr_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
 
-@app.route("/choose_slot/<int:slot_id>/<int:ticket_id>")
-def choose_slot(slot_id, ticket_id):
-    slot = db_session.query(Slot).get(slot_id)
-    ticket = db_session.query(Ticket).get(ticket_id)
-    if slot and ticket and slot.available:
-        slot.available = False
-        ticket.slot = slot
-        db_session.commit()
-    return redirect(url_for("slots", ticket_id=ticket_id))
+        return render_template("qr.html", establishment=est, slot=slot, user=session["user"], qr_code=qr_b64)
+    else:
+        return redirect(url_for("login"))
 
-@app.route("/proceed/<int:ticket_id>")
-def proceed(ticket_id):
-    ticket = db_session.query(Ticket).get(ticket_id)
-    if ticket:
-        qr_path = generate_qr(ticket.id)
-        return render_template("ticket.html", ticket=ticket, qr_file=qr_path)
-    return redirect(url_for("home"))
+# --- Payment page ---
+@app.route("/payment/<est>/<slot>", methods=["GET", "POST"])
+def payment(est, slot):
+    if "user" not in session:
+        return redirect(url_for("login"))
 
-@app.route("/pay/<int:ticket_id>")
-def pay(ticket_id):
-    ticket = db_session.query(Ticket).get(ticket_id)
-    if ticket:
-        ticket.paid = True
-        db_session.commit()
-        qr_path = generate_qr(ticket.id)
-        return render_template("payment_success.html", ticket=ticket, qr_file=qr_path)
-    return redirect(url_for("home"))
-
-# --- Admin ---
-@app.route("/admin/login", methods=["GET", "POST"])
-def admin_login():
     if request.method == "POST":
-        if request.form["password"] == "admin123":
-            session["admin"] = True
+        method = request.form["method"]
+        amount = 50.0  # fixed price for demo
+        duration = "2 hours"
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        receipt_id = f"PR-{int(time.time())}"
+
+        conn = sqlite3.connect("users.db")
+        c = conn.cursor()
+        c.execute("INSERT INTO reservations (user, establishment, slot, payment_method, amount, duration, timestamp, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                  (session["user"], est, slot, method, amount, duration, timestamp, "Pending"))
+        conn.commit()
+        conn.close()
+
+        # Receipt details vary by method
+        if method in ["paypal", "gcash", "maya", "gotyme"]:
+            receipt = f"Paid via {method.upper()} | Contact: (from signup)"
+        elif method == "card":
+            name = request.form["card_name"]
+            number = request.form["card_number"]
+            cvv = request.form["cvv"]
+            exp = request.form["exp"]
+            receipt = f"Card Holder: {name} | Card: {number} | CVV: {cvv} | Exp: {exp}"
+        else:  # cash
+            receipt = "Cash Payment | Please pay at nearest toll booth."
+
+        return render_template("receipt.html",
+                               receipt=receipt,
+                               receipt_id=receipt_id,
+                               user=session["user"],
+                               establishment=est,
+                               slot=slot,
+                               method=method,
+                               amount=amount,
+                               duration=duration)
+
+    return render_template("payment.html", establishment=est, slot=slot, user=session["user"])
+
+# --- My Reservations page ---
+@app.route("/reservations")
+def reservations():
+    if "user" not in session:
+        return redirect(url_for("login"))
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    c.execute("SELECT id, establishment, slot, payment_method, amount, duration, timestamp, status FROM reservations WHERE user=?", (session["user"],))
+    rows = c.fetchall()
+    conn.close()
+    return render_template("reservations.html", reservations=rows, user=session["user"])
+
+# --- Login ---
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+
+        # Special admin login
+        if email == "admin@parkright.com" and password == "adminonly01":
+            session["user"] = "Admin"
+            session["role"] = "admin"
             return redirect(url_for("admin_dashboard"))
+
+        if not valid_email(email):
+            error = "Invalid email format"
         else:
-            return render_template("admin_login.html", error="Invalid password")
-    return render_template("admin_login.html")
+            conn = sqlite3.connect("users.db")
+            c = conn.cursor()
+            c.execute("SELECT fullname, password, role FROM users WHERE email=?", (email,))
+            row = c.fetchone()
+            conn.close()
 
-@app.route("/admin/dashboard")
+            if not row or not check_password_hash(row[1], password):
+                error = "Invalid credentials"
+            else:
+                session["user"] = row[0]
+                session["role"] = row[2]
+                if row[2] == "cashier":
+                    return redirect(url_for("cashier_dashboard"))
+                else:
+                    return render_template("success.html", message=f"Welcome back, {row[0]}!")
+    return render_template("login.html", error=error)
+
+# --- Signup ---
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    error = None
+    if request.method == "POST":
+        fullname = request.form["fullname"]
+        email = request.form["email"]
+        contact = request.form["contact"]
+        plate = request.form["plate"]
+        password = request.form["password"]
+        confirm = request.form["confirm"]
+
+        if not valid_email(email):
+            error = "Invalid email format"
+        elif not valid_contact(contact):
+            error = "Contact number must be 10–15 digits"
+        elif not valid_password(password):
+            error = "Password must be 8+ chars, include uppercase and number"
+        elif password != confirm:
+            error = "Passwords do not match"
+        else:
+            try:
+                conn = sqlite3.connect("users.db")
+                c = conn.cursor()
+                hashed_pw = generate_password_hash(password)
+                c.execute("INSERT INTO users (fullname, email, contact, plate, password, role) VALUES (?, ?, ?, ?, ?, ?)",
+                          (fullname, email, contact, plate, hashed_pw, "user"))
+                conn.commit()
+                conn.close()
+                session["user"] = fullname
+                session["role"] = "user"
+                return render_template("success.html", message=f"Account created for {fullname}!")
+            except sqlite3.IntegrityError:
+                error = "Email already registered"
+    return render_template("signup.html", error=error)
+
+# --- Admin Dashboard ---
+@app.route("/admin_dashboard")
 def admin_dashboard():
-    if not session.get("admin"):
-        return redirect(url_for("admin_login"))
-    slots = db_session.query(Slot).all()
-    tickets = db_session.query(Ticket).all()
-    return render_template("dashboard.html", slots=slots, tickets=tickets)
+    if "role" not in session or session["role"] != "admin":
+        return redirect(url_for("login"))
 
-@app.route("/admin/add_slot", methods=["POST"])
-def add_slot():
-    if not session.get("admin"):
-        return redirect(url_for("admin_login"))
-    name = request.form["name"]
-    slot = Slot(name=name)
-    db_session.add(slot)
-    db_session.commit()
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    c.execute("SELECT fullname, email, role FROM users")
+    users = c.fetchall()
+    c.execute("SELECT * FROM reservations")
+    reservations = c.fetchall()
+    conn.close()
+
+    return render_template("admin_dashboard.html", users=users, reservations=reservations)
+
+# --- Create Cashier ---
+@app.route("/create_cashier", methods=["POST"])
+def create_cashier():
+    if "role" not in session or session["role"] != "admin":
+        return redirect(url_for("login"))
+
+    email = request.form["email"]
+    password = request.form["password"]
+    hashed_pw = generate_password_hash(password)
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    c.execute("INSERT INTO users (fullname, email, contact, plate, password, role) VALUES (?, ?, ?, ?, ?, ?)",
+              ("Cashier", email, "N/A", "N/A", hashed_pw, "cashier"))
+    conn.commit()
+    conn.close()
+
     return redirect(url_for("admin_dashboard"))
 
-@app.route("/release_slot/<int:slot_id>")
-def release_slot(slot_id):
-    slot = db_session.query(Slot).get(slot_id)
-    if slot:
-        slot.available = True
-        db_session.commit()
-    return redirect(url_for("admin_dashboard"))
 
-@app.route("/admin/reset_tickets")
-def reset_tickets():
-    db_session.query(Ticket).delete()
-    db_session.commit()
-    return render_template("reset_success.html")
+# --- Cashier Dashboard ---
+@app.route("/cashier_dashboard")
+def cashier_dashboard():
+    if "role" not in session or session["role"] != "cashier":
+        return redirect(url_for("login"))
 
-@app.route("/admin/logout")
-def admin_logout():
-    session.pop("admin", None)
-    return redirect(url_for("home"))
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    c.execute(
+        "SELECT id, user, establishment, slot, payment_method, amount, duration, timestamp, status FROM reservations")
+    reservations = c.fetchall()
+    conn.close()
 
-# --- Run ---
+    return render_template("cashier_dashboard.html", reservations=reservations, cashier=session["user"])
+
+
+# --- Update Reservation (Cashier actions) ---
+@app.route("/update_reservation/<int:res_id>", methods=["POST"])
+def update_reservation(res_id):
+    if "role" not in session or session["role"] != "cashier":
+        return redirect(url_for("login"))
+
+    action = request.form["action"]
+
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    if action == "confirm":
+        c.execute("UPDATE reservations SET status=? WHERE id=?", ("Confirmed", res_id))
+    elif action == "cancel":
+        c.execute("UPDATE reservations SET status=? WHERE id=?", ("Cancelled", res_id))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("cashier_dashboard"))
+
+
+# --- Logout ---
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    session.pop("role", None)
+    return render_template("success.html", message="You have been logged out.")
+
+
 if __name__ == "__main__":
     app.run(debug=True)

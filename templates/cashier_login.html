@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Slots - ParkRight{% endblock %}
+{% block content %}
+<h2>Available Slots</h2>
+<div class="slot-grid">
+  {% for slot in slots %}
+    <div class="slot {% if slot.is_occupied %}occupied{% else %}available{% endif %}">
+      {{ slot.number }}
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

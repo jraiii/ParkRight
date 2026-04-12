@@ -1,26 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Choose Slot{% endblock %}
 {% block content %}
-<section class="hero">
-    <h1>Available Slots</h1>
-    <p>Select a slot for your car.</p>
-</section>
-
-<div class="slot-grid">
-    {% for slot in slots %}
-    <div class="slot-card {% if ticket.slot and ticket.slot.id == slot.id %}highlight{% elif not slot.available %}occupied{% endif %}">
-        <h3>{{ slot.name }}</h3>
-        <p>{% if slot.available %} ✅ Available {% else %} ❌ Occupied {% endif %}</p>
-        {% if slot.available and not ticket.slot %}
-            <a href="/choose_slot/{{ slot.id }}/{{ ticket.id }}" class="btn">Choose</a>
-        {% else %}
-            <span class="btn disabled">Not Available</span>
-        {% endif %}
+<h2>{{ establishment }} Parking Slots</h2>
+<div class="parking-lot">
+  {% for row_number, left, right in rows %}
+    <div class="parking-row">
+      <a class="slot" href="{{ url_for('select_slot', est=establishment, slot=left) }}">{{ left }}</a>
+      <div class="lane-divider">Row {{ row_number }}</div>
+      <a class="slot" href="{{ url_for('select_slot', est=establishment, slot=right) }}">{{ right }}</a>
     </div>
-    {% endfor %}
-</div>
-
-<div class="button-group">
-    <a href="/proceed/{{ ticket.id }}" class="btn">Proceed</a>
+  {% endfor %}
 </div>
 {% endblock %}

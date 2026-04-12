@@ -1,16 +1,54 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}ParkRight Dashboard{% endblock %}
 {% block content %}
-<section class="hero">
+<div class="center-container">
+  <header class="page-header">
     <h1>Welcome to ParkRight</h1>
-    <p>Reserve your parking slot easily.</p>
-</section>
+    <p>Status: Active | Currency: PHP | Timezone: Asia/Manila</p>
+  </header>
 
-<div class="form-section">
-    <h2>Get a Ticket</h2>
-    <form action="/new_ticket" method="post">
-        <input type="text" name="plate" placeholder="Enter Plate Number" required>
-        <button type="submit">Generate Ticket</button>
-    </form>
+  <section class="dashboard-card">
+    <h2>Parking Establishments</h2>
+    <table class="dashboard-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Slots Available</th>
+          <th>Last Update</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>SM Bataan</td>
+          <td>12</td>
+          <td>Today 09:45</td>
+          <td><a href="{{ url_for('slots', est='SM Bataan') }}" class="btn">View</a></td>
+        </tr>
+        <tr>
+          <td>Vista Mall Bataan</td>
+          <td>8</td>
+          <td>Today 09:40</td>
+          <td><a href="{{ url_for('slots', est='Vista Mall Bataan') }}" class="btn">View</a></td>
+        </tr>
+        <tr>
+          <td>Robinsons Galleria Bataan</td>
+          <td>15</td>
+          <td>Today 09:30</td>
+          <td><a href="{{ url_for('slots', est='Robinsons Galleria Bataan') }}" class="btn">View</a></td>
+        </tr>
+        <tr>
+          <td>Capitol Square</td>
+          <td>10</td>
+          <td>Today 09:20</td>
+          <td><a href="{{ url_for('slots', est='Capitol Square') }}" class="btn">View</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="actions">
+      <a href="{{ url_for('signup') }}" class="btn">Signup</a>
+      <a href="{{ url_for('login') }}" class="btn">Login</a>
+    </div>
+  </section>
 </div>
 {% endblock %}

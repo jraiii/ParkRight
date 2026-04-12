@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+  <h2>Login</h2>
+  <form method="post">
+    <label>Email</label>
+    <input type="text" name="email" id="login-email" required>
+    {% if error and "email" in error.lower() %}<span class="error">{{ error }}</span>{% endif %}
+
+    <label>Password</label>
+    <input type="password" name="password" id="login-password" required>
+    <input type="checkbox" onclick="togglePassword('login-password')"> Show Password
+    {% if error and "credential" in error.lower() %}<span class="error">{{ error }}</span>{% endif %}
+
+    <button type="submit">Login</button>
+  </form>
+  <a href="{{ url_for('signup') }}" class="switch-link">Don't have an account? Sign up here</a>
+</div>
+
+<script>
+function togglePassword(id) {
+  var field = document.getElementById(id);
+  field.type = field.type === "password" ? "text" : "password";
+}
+</script>
+{% endblock %}

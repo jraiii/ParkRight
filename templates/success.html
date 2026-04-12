@@ -1,17 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Success{% endblock %}
 {% block content %}
-<section class="hero">
-    <h1>Success</h1>
-    <p>{{ message }}</p>
-</section>
-
-<div class="form-section">
-    <div class="button-group">
-        <a href="/static" class="btn">Home</a>
-        {% if back_url %}
-            <a href="{{ back_url }}" class="btn">Go Back</a>
-        {% endif %}
-    </div>
-</div>
+<h2>{{ message }}</h2>
+<a href="{{ url_for('index') }}" class="btn">Go to Home</a>
 {% endblock %}

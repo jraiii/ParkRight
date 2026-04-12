@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Select Parking Establishment</h2>
+<ul class="establishments">
+  {% for name, slots in establishments.items() %}
+    <li><a href="{{ url_for('slots', est=name) }}">{{ name }} ({{ slots }} Slots)</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}

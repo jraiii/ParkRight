@@ -1,28 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Admin Login{% endblock %}
+{% block title %}Admin Login - ParkRight{% endblock %}
 {% block content %}
-<section class="hero">
-    <h1>Admin Login</h1>
+<section class="form-section">
+  <h2>Admin Login</h2>
+  <form method="post" action="/admin">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit" class="btn">Login</button>
+  </form>
 </section>
-
-<div class="form-section">
-    {% if error %}
-        <p style="color:red;">{{ error }}</p>
-    {% endif %}
-    <form method="post">
-        <label>Password:</label>
-        <input type="password" id="password" name="password" required>
-        <label><input type="checkbox" onclick="togglePassword()"> Show Password</label>
-        <br><br>
-        <button type="submit">Login</button>
-        <a href="/static" class="btn">Cancel</a>
-    </form>
-</div>
-
-<script>
-function togglePassword() {
-    var x = document.getElementById("password");
-    x.type = (x.type === "password") ? "text" : "password";
-}
-</script>
 {% endblock %}

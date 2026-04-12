@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="receipt-container">
+  <h2 style="text-align:center;">ParkRight Payment Receipt</h2>
+  <div class="receipt-box">
+    <p><strong>Receipt No:</strong> {{ receipt_id }}</p>
+    <hr>
+    <p><strong>User:</strong> {{ user }}</p>
+    <p><strong>Establishment:</strong> {{ establishment }}</p>
+    <p><strong>Slot:</strong> {{ slot }}</p>
+    <p><strong>Payment Method:</strong> {{ method|upper }}</p>
+    <p><strong>Amount Paid:</strong> ₱{{ amount }}</p>
+    <p><strong>Duration:</strong> {{ duration }}</p>
+    <hr>
+    <p><strong>Details:</strong></p>
+    <p>{{ receipt }}</p>
+    <hr>
+    <p style="text-align:center;">Thank you for using ParkRight!</p>
+  </div>
+
+  <a href="{{ url_for('index') }}" class="btn">Return to Homepage</a>
+  <p style="margin-top:0.5rem; font-size:0.9rem; text-align:center;">
+    Redirecting in <span id="countdown">10</span> seconds...
+  </p>
+</div>
+
+<script>
+  let seconds = 10;
+  let countdownElem = document.getElementById("countdown");
+  let timer = setInterval(function(){
+    seconds--;
+    countdownElem.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(timer);
+      window.location.href = "{{ url_for('index') }}";
+    }
+  }, 1000);
+</script>
+
+<style>
+.receipt-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #fff;
+  border: 2px dashed #333;
+  border-radius: 8px;
+  text-align: left;
+  font-family: monospace;
+}
+.receipt-box {
+  padding: 1rem;
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+}
+.receipt-box hr {
+  border: none;
+  border-top: 1px dashed #999;
+  margin: 0.5rem 0;
+}
+.btn {
+  display: block;
+  margin: 1rem auto;
+  padding: 0.5rem 1rem;
+  background: #333;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+}
+.btn:hover {
+  background: #555;
+}
+</style>
+{% endblock %}

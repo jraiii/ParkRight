@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+  <h2>Payment for {{ establishment }} - Slot {{ slot }}</h2>
+  <p>User: {{ user }}</p>
+  <form method="post">
+    <label>Select Payment Method:</label>
+    <select name="method" id="method" onchange="toggleFields()">
+      <option value="paypal">PayPal</option>
+      <option value="gcash">GCash</option>
+      <option value="maya">Maya</option>
+      <option value="gotyme">GoTyme</option>
+      <option value="card">Credit/Debit Card</option>
+      <option value="cash">Cash</option>
+    </select>
+
+    <div id="card-fields" style="display:none; margin-top:1rem;">
+      <label>Name on Card</label>
+      <input type="text" name="card_name">
+      <label>Card Number</label>
+      <input type="text" name="card_number" oninput="detectCardType(this.value)">
+      <small id="card-type"></small>
+      <label>CVV</label>
+      <input type="text" name="cvv">
+      <label>Expiry Date</label>
+      <input type="text" name="exp" placeholder="MM/YY">
+    </div>
+
+    <button type="submit" class="btn">Confirm Payment</button>
+  </form>
+</div>
+
+<script>
+function toggleFields() {
+  var method = document.getElementById("method").value;
+  document.getElementById("card-fields").style.display = (method === "card") ? "block" : "none";
+}
+
+function detectCardType(number) {
+  let type = "";
+  if (/^4/.test(number)) type = "Visa";
+  else if (/^5[1-5]/.test(number)) type = "MasterCard";
+  else if (/^3[47]/.test(number)) type = "American Express";
+  else if (/^6/.test(number)) type = "Discover";
+  document.getElementById("card-type").innerText = type ? "Detected: " + type : "";
+}
+</script>
+{% endblock %}

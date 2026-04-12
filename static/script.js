@@ -1,20 +1,14 @@
+function togglePassword(id) {
+  const field = document.getElementById(id);
+  field.type = field.type === "password" ? "text" : "password";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    const slotButtons = document.querySelectorAll(".slot-btn");
-
-    slotButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const slotId = button.dataset.slotId;
-            const ticketId = button.dataset.ticketId;
-
-            fetch(`/choose_slot/${slotId}/${ticketId}`)
-                .then(response => response.text())
-                .then(data => {
-                    alert(data);
-                    location.reload();
-                })
-                .catch(error => {
-                    console.error("Error assigning slot:", error);
-                });
-        });
+  const slots = document.querySelectorAll(".slot.available");
+  slots.forEach(slot => {
+    slot.addEventListener("click", () => {
+      alert(`You selected slot ${slot.textContent}. Please login or signup to reserve.`);
+      window.location.href = "/login";
     });
+  });
 });

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+  <h2>Signup</h2>
+  <form method="post">
+    <label>Full Name</label>
+    <input type="text" name="fullname" required>
+
+    <label>Email</label>
+    <input type="text" name="email" id="signup-email" required>
+    {% if error and "email" in error.lower() %}<span class="error">{{ error }}</span>{% endif %}
+
+    <label>Contact</label>
+    <input type="text" name="contact" id="signup-contact" required>
+    {% if error and "contact" in error.lower() %}<span class="error">{{ error }}</span>{% endif %}
+
+    <label>Plate Number</label>
+    <input type="text" name="plate" required>
+
+    <label>Password</label>
+    <input type="password" name="password" id="signup-password" required>
+    <input type="checkbox" onclick="togglePassword('signup-password')"> Show Password
+    {% if error and "password" in error.lower() %}<span class="error">{{ error }}</span>{% endif %}
+
+    <label>Confirm Password</label>
+    <input type="password" name="confirm" id="signup-confirm" required>
+    <input type="checkbox" onclick="togglePassword('signup-confirm')"> Show Password
+    {% if error and "match" in error.lower() %}<span class="error">{{ error }}</span>{% endif %}
+
+    <button type="submit">Signup</button>
+  </form>
+  <a href="{{ url_for('login') }}" class="switch-link">Already have an account? Login here</a>
+</div>
+
+<script>
+function togglePassword(id) {
+  var field = document.getElementById(id);
+  field.type = field.type === "password" ? "text" : "password";
+}
+</script>
+{% endblock %}

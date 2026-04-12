@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+  <h2>QR Code for {{ establishment }}</h2>
+  <p><strong>User:</strong> {{ user }}</p>
+  <p><strong>Slot:</strong> {{ slot }}</p>
+  <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" style="margin-top:1rem; max-width:250px;">
+  <p style="margin-top:1rem;">Show this QR at the entrance.</p>
+  <a href="{{ url_for('payment', est=establishment, slot=slot) }}" class="btn">Proceed to Payment</a>
+</div>
+{% endblock %}

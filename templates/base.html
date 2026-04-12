@@ -1,46 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}ParkRight{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <title>{% block title %}ParkRight{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Link to your custom stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a href="/static"><img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo"></a>
-        {% if session.get('admin') %}
-            <a href="/admin/dashboard">Dashboard</a>
-            <a href="/admin/logout">Logout</a>
-        {% else %}
-            <a href="/static">Home</a>
-            <a href="/admin/login">Admin</a>
-        {% endif %}
-    </nav>
-
-    <!-- Toast Notifications -->
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div id="toast">
-          {% for msg in messages %}
-            <p>{{ msg }}</p>
-          {% endfor %}
-        </div>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo-container">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="ParkRight Logo" class="logo">
+        <h2>ParkRight</h2>
+      </div>
+      {% if session.get('user') %}
+        <p class="welcome">Welcome, {{ session['user'] }}</p>
       {% endif %}
-    {% endwith %}
-
-    <!-- Page Content -->
-    {% block content %}{% endblock %}
-
-    <!-- Footer Navigation -->
-    <div class="footer-nav">
-        <a href="/static">Home</a>
-        {% if session.get('last_ticket_id') %}
-            <a href="/ticket/{{ session.get('last_ticket_id') }}">Ticket</a>
+      <nav>
+        <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Home</a>
+        {% if session.get('user') %}
+          <a href="{{ url_for('logout') }}" class="{% if request.endpoint == 'logout' %}active{% endif %}">Logout</a>
         {% else %}
-            <a href="/static">Ticket</a>
+          <a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Login</a>
+          <a href="{{ url_for('signup') }}" class="{% if request.endpoint == 'signup' %}active{% endif %}">Signup</a>
         {% endif %}
-        <a href="/admin/login">Admin</a>
-    </div>
+        <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">About Us</a>
+        <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Reach Us</a>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <div class="center-container">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+  </div>
 </body>
 </html>

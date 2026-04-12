@@ -1,16 +1,15 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from app import Base, Ticket, Slot
+import sqlite3
 
-engine = create_engine('sqlite:///database.db')
-Session = sessionmaker(bind=engine)
-db_session = Session()
+def reset_slots():
+    conn = sqlite3.connect("parkright.db")
+    cursor = conn.cursor()
 
-# Ensure tables exist
-Base.metadata.create_all(engine)
+    # Reset all slots to available (0)
+    cursor.execute("UPDATE slots SET is_occupied = 0")
 
-# Delete all tickets but keep slots
-deleted_count = db_session.query(Ticket).delete()
-db_session.commit()
+    conn.commit()
+    conn.close()
+    print("All slots reset to available.")
 
-print(f"Deleted {deleted_count} tickets. Slots remain intact.")
+if __name__ == "__main__":
+    reset_slots()
